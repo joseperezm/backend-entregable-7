@@ -12,12 +12,18 @@
                     {{messages.error}}
                 </div>
             {{/if}}
-            <form action="/api/sessions/login" method="POST" class="card card-body bg-secondary mt-4">
+            <form action="/api/sessions/login" method="POST" class="card card-body bg-secondary mt-4 needs-validation" novalidate>
                 <div class="mb-3">
                     <input type="email" class="form-control" id="email" name="email" placeholder="E-mail" required>
+                    <div class="invalid-feedback">
+                        Por favor ingresa una dirección de correo electrónico válida.
+                    </div>
                 </div>
                 <div class="mb-3">
                     <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña" required>
+                    <div class="invalid-feedback">
+                        Por favor ingresa tu contraseña.
+                    </div>
                 </div>
                 <div class="d-grid">
                     <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
@@ -30,3 +36,4 @@
     </div>
 </div>
 <script src="/js/hideError.js"></script>
+<script src="/js/validate.js"></script>
