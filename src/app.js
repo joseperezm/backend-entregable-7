@@ -1,4 +1,5 @@
 const express = require('express');
+const flash = require('connect-flash');
 const session = require('express-session');
 const exphbs = require("express-handlebars");
 const socket = require("socket.io");
@@ -31,6 +32,8 @@ app.use(session({
   saveUninitialized: true,
   store: MongoStore.create({ mongoUrl: 'mongodb+srv://coderhouse:ihOXSjjIqf0DM7xT@jjpm.envjeyh.mongodb.net/ecommerce?retryWrites=true&w=majority', ttl: 100})
 }));
+
+app.use(flash());
 
 app.use((req, res, next) => {
     if (req.session.user) {

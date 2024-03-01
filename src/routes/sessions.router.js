@@ -29,21 +29,29 @@ router.get('/register', redirectIfLoggedInApi, (req, res) => {
 router.post('/register', redirectIfLoggedInApi, async (req, res) => {
     try {
         const { first_name, last_name, email, age, password } = req.body;
-        const role = 'usuario'; 
-        const user = new User({ 
-            first_name, 
-            last_name, 
-            email, 
-            age, 
-            password: password, 
+        const role = 'usuario';
+        const user = new User({
+            first_name,
+            last_name,
+            email,
+            age,
+            password: password,
             role
-        }); 
+        });
         await user.save();
-        console.log('Registro exitoso para:', email, 'Rol:', role); 
+        console.log('Registro exitoso para:', email, 'Rol:', role);
+        req.flash('success', `Registro exitoso para ${email}.`);
         res.redirect('/login');
     } catch (error) {
         console.log('Error al registrar el usuario:', error);
-        res.status(500).send('Error al registrar el usuario: ' + error.message);
+
+        if (error.name === 'MongoServerError' && error.code === 11000) {
+            req.flash('error', 'E-mail ya existente. Por favor intenta con otro.');
+        } else {
+            req.flash('error', `Error al registrar el usuario: ${error.message}`);
+        }
+
+        res.redirect('/register');
     }
 });
 
@@ -97,6 +105,7 @@ router.post('/login', redirectIfLoggedIn, async (req, res) => {
             res.redirect('/products');
         } else {
             console.log('Intento de inicio de sesión fallido para:', email, '- Contraseña incorrecta o usuario no encontrado');
+            req.flash('error', `Contraseña incorrecta o usuario no encontrado`);
             res.redirect('/login');
         }
     } catch (error) {

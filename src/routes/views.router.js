@@ -95,12 +95,14 @@ router.get("/carts/:cid", redirectIfNotLoggedIn, async (req, res) => {
     }
 });
 
-router.get("/login", redirectIfLoggedIn, (req, res) => {
-    res.render("login", { title: "Iniciar Sesión" });
+router.get('/login', redirectIfLoggedIn, (req, res) => {
+    const messages = req.flash();
+    res.render('login', { messages });
 });
 
 router.get("/register", redirectIfLoggedIn, (req, res) => {
-    res.render("register", { title: "Registrarse" }); 
+    const messages = req.flash();
+    res.render('register', { messages }); 
 });
 
 router.get('/profile', redirectIfNotLoggedIn, (req, res) => {
