@@ -1,7 +1,5 @@
 # Refactor a nuestro login
 
-## Con base en el login de nuestro entregable anterior, refactorizar para incluir los nuevos conceptos.
-
 ### Aspectos a incluir
 - Se deberá contar con un hasheo de contraseña utilizando bcrypt
 - Se deberá contar con una implementación de passport, tanto para register como para login.
