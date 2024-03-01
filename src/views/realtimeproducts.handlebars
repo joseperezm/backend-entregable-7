@@ -1,0 +1,42 @@
+<h1 class="titulos mt-4">Productos Actualizados en Tiempo Real</h1>
+
+<div id="productContainer" class="mt-4"></div>
+
+<div class="mt-4">
+    <h2 class="titulos">Formulario para agregar productos </h2>
+
+<form class="texto-formulario">
+    <div class="mb-3">
+        <input type="text" class="form-control" id="title" placeholder="Título" required>
+    </div>
+    <div class="mb-3">
+        <input type="text" class="form-control" id="description" placeholder="Descripción" required>
+    </div>
+    <div class="mb-3">
+        <input type="number" class="form-control" id="price" placeholder="Precio" min="1" required>
+    </div>
+    <div class="mb-3">
+        <input type="text" class="form-control" id="thumbnails" placeholder="Imagen (opcional)">
+    </div>
+    <div class="mb-3">
+        <input type="text" class="form-control" id="code" placeholder="Código" required>
+    </div>
+    <div class="mb-3">
+        <input type="number" class="form-control" id="stock" placeholder="Stock" min="1" required>
+    </div>
+    <div class="mb-3">
+        <input type="text" class="form-control" id="category" placeholder="Categoría" required>
+    </div>
+    <div class="mb-3">
+    <select class="form-select" id="status">
+        <option value="true" selected>Activo</option>
+        <option value="false">Inactivo</option>
+    </select>
+    </div>
+    <button type="button" class="btn btn-primary" id="btnSend">Agregar producto</button>
+</form>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
+<script src="/js/realTimeProducts.js"></script>

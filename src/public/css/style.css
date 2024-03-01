@@ -1,0 +1,166 @@
+body, h1, h2, p, input, select, button {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #222;
+    color: #fff;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1, h2, a {
+    color: #00bcd4;
+}
+
+.contenedorCards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.card {
+    background-color: #333;
+    color: #fff;
+    padding: 15px;
+    border-radius: 5px;
+    width: 250px;
+    min-height: 250px;
+    margin: auto;
+}
+
+#productContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap:20px;
+}
+
+form {
+    max-width: 400px;
+    margin: 20px auto;
+}
+
+.form-control {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    background-color: #7c7c7c;
+    border: 1px solid #00bcd4;
+    border-radius: 4px;
+}
+
+.form-select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    background-color: #333;
+    color: #fff;
+    border: 1px solid #00bcd4;
+    border-radius: 4px;
+}
+
+.btn-primary {
+    background-color: #00bcd4;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    background-color: #008ba3;
+}
+
+.titulos {
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.chatMessage li {
+    color: #e7e5e5;
+    background-color: #7c7c7c;
+    padding: 10px;
+    margin: 20px 10px 20px 10px;
+    border: 1px solid #00bcd4;
+    border-radius: 10px;
+}
+
+.input-group > :not(:first-child):not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
+    margin-left: calc(var(--bs-border-width) * 2);
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.input-group:not(.has-validation) > .dropdown-toggle:nth-last-child(n+3), .input-group:not(.has-validation) > .form-floating:not(:last-child) > .form-control, .input-group:not(.has-validation) > .form-floating:not(:last-child) > .form-select, .input-group:not(.has-validation) > :not(:last-child):not(.dropdown-toggle):not(.dropdown-menu):not(.form-floating) {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+.mini {
+    font-size: x-small;
+}
+
+.sorting-buttons {
+    margin-bottom: 10px;
+}
+
+.centrar-botones {
+    text-align: right;
+    margin-right: 10px;
+
+}
+
+.page-link {
+    color: #fff;
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+.page-link:hover {
+    color: #fff;
+    background-color: #5c636a;
+    border-color: #565e64;
+}
+
+.modal-title {
+    color: black;
+}
+
+.custom-container .card:hover {
+    transform: scale(1.03);
+    transition: transform .3s ease-in-out, box-shadow .3s ease-in-out;
+    box-shadow: 0 0 11px rgba(33,33,33,.2);
+}
+
+.form-nav {
+    margin: 5px!important;
+}
+
+.navbar {
+    background-color: #008ba3;
+}
+
+.cartList {
+    background-color: #abbcca!important;
+}
+
+.upperBorder {
+    margin-top: 80px;  
+}
+
+.list-group-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.product-info {
+    flex-grow: 1;
+}
