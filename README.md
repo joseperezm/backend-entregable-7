@@ -1,6 +1,13 @@
-# DESAFÍO ENTREGABLE - PROCESO DE TESTING
+# Refactor a nuestro login
 
-## Login por formulario
+## Con base en el login de nuestro entregable anterior, refactorizar para incluir los nuevos conceptos.
+
+### Aspectos a incluir
+- Se deberá contar con un hasheo de contraseña utilizando bcrypt
+- Se deberá contar con una implementación de passport, tanto para register como para login.
+- Implementar el método de autenticación de GitHub a la vista de login.
+
+### Proceso de testing
 
 - Al cargar el proyecto, éste deberá comenzar en la pantalla de login.
 - Al no tener un usuario, primero se creará un usuario, para esto, la pantalla de login deberá tener un link de redirección "Regístrate".
