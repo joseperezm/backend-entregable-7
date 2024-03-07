@@ -80,7 +80,6 @@ router.get('/login', redirectIfLoggedIn, (req, res) => {
 router.post('/login', redirectIfLoggedIn, async (req, res) => {
     const { email, password } = req.body;
 
-    // Mantén la lógica para el superusuario administrativo como está
     if (email === 'adminCoder@coder.com' && password === 'adminCod3r123') {
         req.session.user = {
             email,
@@ -95,7 +94,6 @@ router.post('/login', redirectIfLoggedIn, async (req, res) => {
 
     try {
         const user = await User.findOne({ email: email });
-        // Cambia la comparación de contraseñas para utilizar isValidPassword de bcrypt
         if (user && isValidPassword(password, user)) {
             req.session.user = {
                 id: user._id,
@@ -109,13 +107,11 @@ router.post('/login', redirectIfLoggedIn, async (req, res) => {
             console.log('Inicio de sesión exitoso para:', email, 'Rol: usuario');
             res.redirect('/products');
         } else {
-            // Mantén el manejo de errores como está
             console.log('Intento de inicio de sesión fallido para:', email, '- Contraseña incorrecta o usuario no encontrado');
             req.flash('error', `Contraseña incorrecta o usuario no encontrado`);
             res.redirect('/login');
         }
     } catch (error) {
-        // Mantén el manejo de errores como está
         console.log('Error al iniciar sesión:', error);
         res.status(500).send('Error al iniciar sesión: ' + error.message);
     }
