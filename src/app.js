@@ -26,11 +26,19 @@ app.use(express.json());
 
 app.use(cookieParser());
 
+const oneWeekLogin = 7 * 24 * 60 * 60;
+
 app.use(session({
   secret: "s3cr3t0sup3r53cr3t0",
   resave: true,
   saveUninitialized: true,
-  store: MongoStore.create({ mongoUrl: 'mongodb+srv://coderhouse:ihOXSjjIqf0DM7xT@jjpm.envjeyh.mongodb.net/ecommerce?retryWrites=true&w=majority', ttl: 100})
+  store: MongoStore.create({ 
+    mongoUrl: 'mongodb+srv://coderhouse:ihOXSjjIqf0DM7xT@jjpm.envjeyh.mongodb.net/ecommerce?retryWrites=true&w=majority', 
+    ttl: oneWeekLogin
+  }),
+  cookie: {
+    maxAge: oneWeekLogin * 1000 // milisegundos
+  }
 }));
 
 app.use(flash());
