@@ -67,7 +67,7 @@ router.get('/login', redirectIfLoggedIn, (req, res) => {
             "Set the request URL to the endpoint for logging in. For example, 'http://localhost:8080/api/sessions/login' if you are running your server locally.",
             "Go to the 'Headers' tab and add a header with key 'Content-Type' and value 'application/json'.",
             "Go to the 'Body' tab, select 'raw', and then select 'JSON' from the dropdown menu.",
-            "Enter your login credentials in JSON format. For example: {\"email\": \"your_email@example.com\", \"password\": \"your_password\"}.",
+            "Enter your login credentials in JSON format. Example: {\"email\": \"your_email@example.com\", \"password\": \"your_password\"}.",
             "Send the request.",
             "If login is successful, you should receive a response including a session cookie. Use this cookie for subsequent requests to authenticated routes."
         ],
