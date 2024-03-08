@@ -138,7 +138,7 @@ router.get("/auth/github/callback", passport.authenticate("github", {failureRedi
         id: req.user._id,
         first_name: req.user.first_name,
         last_name: req.user.last_name,
-        email: 'ID '+req.user.email,
+        email: 'GitHub ID: '+req.user.email,
         age: req.user.age,
         role: role
     };
@@ -147,5 +147,40 @@ router.get("/auth/github/callback", passport.authenticate("github", {failureRedi
     req.flash('success', `¡Inicio de sesión con GitHub exitoso para: ${userName}!`);
     res.redirect("/products");
 });
+
+// Ruta para iniciar la autenticación con Google
+router.get('/auth/google',
+  passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+  router.get("/auth/google/callback", passport.authenticate("google", { failureRedirect: "/login" }), async (req, res) => {
+    // Verifica si el usuario está en la sesión y asigna un nombre por defecto si no se encuentra.
+    const userName = req.user ? `${req.user.first_name} ${req.user.last_name}` : 'Desconocido';
+    
+    // Asigna un rol por defecto si no se encuentra uno en el usuario.
+    let role = req.user.role || 'usuario';
+    
+    // Actualiza la información de la sesión del usuario con los datos provenientes de Google.
+    // Asume que el usuario en la sesión ya se ha actualizado basado en la estrategia de autenticación de Google.
+    req.session.user = {
+        id: req.user._id,
+        first_name: req.user.first_name,
+        last_name: req.user.last_name,
+        email: 'Google ID: '+req.user.email, // Se asume que este correo electrónico viene de Google y ya está validado.
+        age: req.user.age, // Asume que este campo puede estar vacío si el usuario no lo proporcionó.
+        role: role // Asume un 'usuario' por defecto si no hay rol definido.
+    };
+
+    req.session.login = true; // Establece una bandera para indicar que el usuario ha iniciado sesión.
+    
+    // Registra el inicio de sesión en la consola para fines de depuración.
+    console.log(`Inicio de sesión desde Google para el usuario: ${userName}`);
+    
+    // Informa al usuario que el inicio de sesión fue exitoso.
+    req.flash('success', `¡Inicio de sesión con Google exitoso para: ${userName}!`);
+    
+    // Redirecciona al usuario a la página de productos o cualquier otra página principal.
+    res.redirect("/products");
+});
+
 
 module.exports = router;

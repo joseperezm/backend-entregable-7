@@ -71,7 +71,7 @@ const initializePassport = () => {
                     let newUser = {
                         first_name: profile._json.name,
                         last_name: "",
-                        age: 36,
+                        age: null,
                         email: profile._json.id,
                         password: ""
                     }
@@ -85,7 +85,41 @@ const initializePassport = () => {
                 return done(error);
             }
     
-        }))
+        }));
+
+        const GoogleStrategy = require('passport-google-oauth20').Strategy;
+
+passport.use(new GoogleStrategy({
+    clientID: '995178315130-4l4keni15gt5igd7r1jevcnmcke3blt0.apps.googleusercontent.com', // Asegúrate de tener tus credenciales de Google en variables de entorno
+    clientSecret: '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',
+    callbackURL: "http://localhost:8080/api/sessions/auth/google/callback" // Cambia esto a tu URL de producción cuando estés listo
+  },
+  async (accessToken, refreshToken, profile, done) => {
+    try {
+        // Busca el usuario en la base de datos
+        let user = await UserModel.findOne({ email: profile.id });
+
+        // Si el usuario no existe, créalo
+        if (!user) {
+            const newUser = new UserModel({
+                first_name: profile.name.givenName, // Utiliza el nombre dado del perfil de Google
+                last_name: profile.name.familyName, // Utiliza el apellido del perfil de Google
+                age: null, // Este es un valor estático, ajusta según sea necesario
+                email: profile.id, // Utiliza el correo electrónico principal de Google
+                password: "", // Podrías dejar este campo vacío o generar una contraseña aleatoria
+            });
+
+            // Guarda el nuevo usuario en la base de datos.
+            user = await newUser.save();
+        }
+
+        // El usuario existe o se ha creado un nuevo usuario, así que devuelve este usuario
+        done(null, user);
+    } catch (error) {
+        done(error);
+    }
+}));
+
 };
 
 module.exports = initializePassport;
