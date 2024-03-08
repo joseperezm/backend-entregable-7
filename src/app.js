@@ -6,11 +6,13 @@ const socket = require("socket.io");
 const mongoose = require('mongoose');
 const MongoStore = require('connect-mongo');
 const cookieParser = require('cookie-parser');
+const passport = require('passport');
 const PUERTO = 8080;
 const productsRouter = require("./routes/products.router.js");
 const cartsRouter = require("./routes/carts.router.js");
 const viewsRouter = require("./routes/views.router.js");
 const sessionsRouter = require('./routes/sessions.router.js');
+const initializePassport = require("./config/passport.config.js");
 
 const app = express();
 
@@ -40,6 +42,10 @@ app.use(session({
     maxAge: oneWeekLogin * 1000 // milisegundos
   }
 }));
+
+initializePassport();
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(flash());
 

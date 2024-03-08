@@ -1,7 +1,5 @@
 const express = require('express');
-const bcrypt = require('bcrypt');
-const { createHash } = require('../utils/hashBcrypt.js');
-const { isValidPassword } = require('../utils/hashBcrypt.js');
+const passport = require('passport');
 const User = require('../dao/models/user-mongoose');
 const router = express.Router();
 
@@ -28,33 +26,15 @@ router.get('/register', redirectIfLoggedInApi, (req, res) => {
     res.json(registrationInstructions);
 });
 
-router.post('/register', redirectIfLoggedInApi, async (req, res) => {
-    try {
-        const { first_name, last_name, email, age, password } = req.body;
-        const role = 'usuario';
-        const hashedPassword = createHash(password);
-        const user = new User({
-            first_name,
-            last_name,
-            email,
-            age,
-            password: hashedPassword,
-            role
-        });
-        await user.save();
-        console.log('Registro exitoso para:', email, 'Rol:', role);
-        req.flash('success', `Registro exitoso para ${email}.`);
+router.post('/register', redirectIfLoggedInApi, passport.authenticate('register', {
+    failureRedirect: '/register',
+    failureFlash: true
+}), async (req, res) => {
+    if (req.user) {
+        req.flash('success', `Registro exitoso para ${req.user.email}.`);
         res.redirect('/login');
-    } catch (error) {
-        console.log('Error al registrar el usuario:', error);
-
-        if (error.name === 'MongoServerError' && error.code === 11000) {
-            req.flash('error', 'E-mail ya existente. Por favor intenta con otro.');
-        } else {
-            req.flash('error', `Error al registrar el usuario: ${error.message}`);
-        }
-
-        res.redirect('/register');
+    } else {
+        return res.status(400).send({status: "error", message: "Credenciales inválidas"});
     }
 });
 
@@ -77,7 +57,7 @@ router.get('/login', redirectIfLoggedIn, (req, res) => {
     res.json(loginInstructions);
 });
 
-router.post('/login', redirectIfLoggedIn, async (req, res) => {
+router.post('/login', redirectIfLoggedIn, (req, res, next) => {
     const { email, password } = req.body;
 
     if (email === 'adminCoder@coder.com' && password === 'adminCod3r123') {
@@ -92,40 +72,55 @@ router.post('/login', redirectIfLoggedIn, async (req, res) => {
         return res.redirect('/products');
     }
 
-    try {
-        const user = await User.findOne({ email: email });
-        if (user && isValidPassword(password, user)) {
+    passport.authenticate('login', (err, user, info) => {
+        if (err) {
+            console.log('Error al iniciar sesión:', err);
+            req.flash('error', 'Error al iniciar sesión...');
+            return res.redirect('/login');
+        }
+        if (!user) {
+            console.log('Intento de inicio de sesión fallido para:', email);
+            req.flash('error', 'Usuario o contraseña incorrectos...');
+            return res.redirect('/login');
+        }
+        req.logIn(user, (err) => {
+            if (err) {
+                console.log('Error al iniciar sesión:', err);
+                req.flash('error', 'Error al iniciar sesión...');
+                return res.redirect('/login');
+            }
             req.session.user = {
                 id: user._id,
                 first_name: user.first_name,
                 last_name: user.last_name,
                 email: user.email,
                 age: user.age,
-                role: 'usuario'
+                role: user.role || 'usuario'
             };
-
-            console.log('Inicio de sesión exitoso para:', email, 'Rol: usuario');
-            res.redirect('/products');
-        } else {
-            console.log('Intento de inicio de sesión fallido para:', email, '- Contraseña incorrecta o usuario no encontrado');
-            req.flash('error', `Contraseña incorrecta o usuario no encontrado`);
-            res.redirect('/login');
-        }
-    } catch (error) {
-        console.log('Error al iniciar sesión:', error);
-        res.status(500).send('Error al iniciar sesión: ' + error.message);
-    }
+            return res.redirect('/products');
+        });
+    })(req, res, next);
 });
 
 router.get("/logout", redirectIfNotLoggedIn, (req, res) => {
-    req.session.destroy((err) => {
+
+    const userEmail = req.user ? req.user.email : 'Desconocido';
+
+    req.logout(function(err) {
         if (err) {
             console.log('Error al cerrar sesión:', err);
-            res.status(500).send('Error al cerrar sesión: ' + error.message);
-        } else {
-            res.clearCookie('connect.sid', {path: '/'}); 
-            res.redirect('/login'); 
+            return res.redirect('/');
         }
+
+        req.session.destroy((err) => {
+            if (err) {
+                console.log('Error al destruir la sesión:', err);
+                return res.redirect('/');
+            }            
+            res.clearCookie('connect.sid', { path: '/' });
+            console.log(`Cierre de sesión exitoso para el usuario: ${userEmail}`);            
+            res.redirect('/login');
+        });
     });
 });
 
