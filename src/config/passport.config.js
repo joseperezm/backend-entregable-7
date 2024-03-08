@@ -3,6 +3,8 @@ const local = require("passport-local");
 const UserModel = require("../dao/models/user-mongoose.js");
 const { createHash, isValidPassword } = require("../utils/hashBcrypt.js");
 
+const GitHubStrategy = require('passport-github2').Strategy;
+
 const LocalStrategy = local.Strategy;
 
 const initializePassport = () => {
@@ -56,6 +58,35 @@ const initializePassport = () => {
         let user = await UserModel.findById({_id: id});
         done(null, user);
     });
+
+        passport.use("github", new GitHubStrategy({
+            clientID: "5fbb6e5e486efe9ea306",
+            clientSecret: "5d88ec90f20b9494fc0804aeede78c64ecc1d4ef",
+            callbackURL: "http://localhost:8080/api/sessions/auth/github/callback"
+        }, async (accessToken, refreshToken, profile, done) => {
+            console.log("Profile: ", profile);
+            try {
+                let user = await UserModel.findOne({ email: profile._json.email })
+    
+                if (!user) {
+                    let newUser = {
+                        first_name: profile._json.name,
+                        last_name: "",
+                        age: 36,
+                        email: profile._json.email,
+                        password: ""
+                    }
+                    let result = await UserModel.create(newUser);
+                    done(null, result)
+                } else {
+                    done(null, user);
+                }
+    
+            } catch (error) {
+                return done(error);
+            }
+    
+        }))
 };
 
 module.exports = initializePassport;

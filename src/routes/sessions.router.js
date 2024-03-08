@@ -127,4 +127,21 @@ router.get("/logout", redirectIfNotLoggedIn, (req, res) => {
     });
 });
 
+router.get("/auth/github", passport.authenticate("github", {scope: ["user:email"]}), async (req, res) => {});
+
+router.get("/auth/github/callback", passport.authenticate("github", {failureRedirect: "/login"}), async (req, res) => {
+    let role = req.user.role || 'usuario';
+    req.session.user = {
+        id: req.user._id,
+        first_name: req.user.first_name,
+        last_name: req.user.last_name,
+        email: req.user.email,
+        age: req.user.age,
+        role: role
+    };
+    req.session.login = true; 
+    req.flash('success', '¡Inicio de sesión con GitHub exitoso!');
+    res.redirect("/products");
+});
+
 module.exports = router;
