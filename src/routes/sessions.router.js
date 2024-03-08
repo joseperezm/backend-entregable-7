@@ -130,6 +130,7 @@ router.get("/logout", redirectIfNotLoggedIn, (req, res) => {
 router.get("/auth/github", passport.authenticate("github", {scope: ["user:email"]}), async (req, res) => {});
 
 router.get("/auth/github/callback", passport.authenticate("github", {failureRedirect: "/login"}), async (req, res) => {
+    const userEmail = req.user ? req.user.email : 'Desconocido';
     let role = req.user.role || 'usuario';
     req.session.user = {
         id: req.user._id,
@@ -139,7 +140,8 @@ router.get("/auth/github/callback", passport.authenticate("github", {failureRedi
         age: req.user.age,
         role: role
     };
-    req.session.login = true; 
+    req.session.login = true;
+    console.log(`Inicio de sesión desde GitHub para usuario: ${userEmail}`);            
     req.flash('success', '¡Inicio de sesión con GitHub exitoso!');
     res.redirect("/products");
 });

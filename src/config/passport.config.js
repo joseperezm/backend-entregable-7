@@ -64,7 +64,6 @@ const initializePassport = () => {
             clientSecret: "5d88ec90f20b9494fc0804aeede78c64ecc1d4ef",
             callbackURL: "http://localhost:8080/api/sessions/auth/github/callback"
         }, async (accessToken, refreshToken, profile, done) => {
-            console.log("Profile: ", profile);
             try {
                 let user = await UserModel.findOne({ email: profile._json.email })
     
