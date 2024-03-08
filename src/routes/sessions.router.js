@@ -84,6 +84,7 @@ router.post('/login', redirectIfLoggedIn, (req, res, next) => {
             return res.redirect('/login');
         }
         req.logIn(user, (err) => {
+            const userName = req.user ? `${req.user.first_name} ${req.user.last_name}` : 'Desconocido';
             if (err) {
                 console.log('Error al iniciar sesión:', err);
                 req.flash('error', 'Error al iniciar sesión...');
@@ -97,7 +98,8 @@ router.post('/login', redirectIfLoggedIn, (req, res, next) => {
                 age: user.age,
                 role: user.role || 'usuario'
             };
-            req.flash('success', '¡Inicio de sesión exitoso!');
+            console.log(`Inicio de sesión local para usuario: ${userName}`);            
+            req.flash('success', `¡Inicio de sesión exitoso para: ${userName}!`);
             return res.redirect('/products');
         });
     })(req, res, next);
@@ -105,7 +107,7 @@ router.post('/login', redirectIfLoggedIn, (req, res, next) => {
 
 router.get("/logout", redirectIfNotLoggedIn, (req, res) => {
     
-    const userEmail = req.user ? req.user.email : 'Desconocido';
+    const userName = req.user ? `${req.user.first_name} ${req.user.last_name}` : 'Desconocido';
 
     req.logout(function(err) {
         if (err) {
@@ -121,7 +123,7 @@ router.get("/logout", redirectIfNotLoggedIn, (req, res) => {
                 return res.redirect('/profile');
             }            
             res.clearCookie('connect.sid', { path: '/' });
-            console.log(`Cierre de sesión exitoso para el usuario: ${userEmail}`);            
+            console.log(`Cierre de sesión exitoso para el usuario: ${userName}`);            
             res.redirect('/login');
         });
     });
@@ -130,19 +132,19 @@ router.get("/logout", redirectIfNotLoggedIn, (req, res) => {
 router.get("/auth/github", passport.authenticate("github", {scope: ["user:email"]}), async (req, res) => {});
 
 router.get("/auth/github/callback", passport.authenticate("github", {failureRedirect: "/login"}), async (req, res) => {
-    const userEmail = req.user ? req.user.email : 'Desconocido';
+    const userName = req.user ? `${req.user.first_name} ${req.user.last_name}` : 'Desconocido';
     let role = req.user.role || 'usuario';
     req.session.user = {
         id: req.user._id,
         first_name: req.user.first_name,
         last_name: req.user.last_name,
-        email: req.user.email,
+        email: 'ID '+req.user.email,
         age: req.user.age,
         role: role
     };
     req.session.login = true;
-    console.log(`Inicio de sesión desde GitHub para usuario: ${userEmail}`);            
-    req.flash('success', '¡Inicio de sesión con GitHub exitoso!');
+    console.log(`Inicio de sesión desde GitHub para usuario: ${userName}`);            
+    req.flash('success', `¡Inicio de sesión con GitHub exitoso para: ${userName}!`);
     res.redirect("/products");
 });
 

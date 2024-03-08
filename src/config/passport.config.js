@@ -65,14 +65,14 @@ const initializePassport = () => {
             callbackURL: "http://localhost:8080/api/sessions/auth/github/callback"
         }, async (accessToken, refreshToken, profile, done) => {
             try {
-                let user = await UserModel.findOne({ email: profile._json.email })
+                let user = await UserModel.findOne({ email: profile._json.id })
     
                 if (!user) {
                     let newUser = {
                         first_name: profile._json.name,
                         last_name: "",
                         age: 36,
-                        email: profile._json.email,
+                        email: profile._json.id,
                         password: ""
                     }
                     let result = await UserModel.create(newUser);
