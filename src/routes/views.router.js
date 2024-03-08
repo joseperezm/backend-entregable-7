@@ -13,9 +13,6 @@ const cartManager = new CartManager();
 const redirectIfNotLoggedIn = require('../middleware/auth.js');
 const redirectIfLoggedIn = require('../middleware/loggedIn.js');
 
-const bcrypt = require('bcrypt');
-const User = require('../dao/models/user-mongoose.js');
-
 router.get("/", redirectIfNotLoggedIn, (req, res) => {
     res.render("index");
 });
@@ -37,7 +34,10 @@ router.get("/products", redirectIfNotLoggedIn, async (req, res) => {
             return producto.toObject ? producto.toObject() : producto;
         }) : [];
 
+        const messages = req.flash();
+
         res.render("products", {
+            messages,
             productos: productosObj,
             page: result.page,
             totalPages: result.totalPages,

@@ -1,6 +1,5 @@
 const express = require('express');
 const passport = require('passport');
-const User = require('../dao/models/user-mongoose');
 const router = express.Router();
 
 const redirectIfNotLoggedIn = require('../middleware/auth.js');
@@ -31,7 +30,7 @@ router.post('/register', redirectIfLoggedInApi, passport.authenticate('register'
     failureFlash: true
 }), async (req, res) => {
     if (req.user) {
-        req.flash('success', `Registro exitoso para ${req.user.email}.`);
+        req.flash('success', `¡Registro exitoso para ${req.user.email}!`);
         res.redirect('/login');
     } else {
         return res.status(400).send({status: "error", message: "Credenciales inválidas"});
@@ -69,6 +68,7 @@ router.post('/login', redirectIfLoggedIn, (req, res, next) => {
             age: '9999'
         };
         console.log('Inicio de sesión exitoso para:', email, 'Rol: admin');
+        req.flash('success', '¡Inicio de sesión exitoso!');
         return res.redirect('/products');
     }
 
@@ -97,25 +97,28 @@ router.post('/login', redirectIfLoggedIn, (req, res, next) => {
                 age: user.age,
                 role: user.role || 'usuario'
             };
+            req.flash('success', '¡Inicio de sesión exitoso!');
             return res.redirect('/products');
         });
     })(req, res, next);
 });
 
 router.get("/logout", redirectIfNotLoggedIn, (req, res) => {
-
+    
     const userEmail = req.user ? req.user.email : 'Desconocido';
 
     req.logout(function(err) {
         if (err) {
             console.log('Error al cerrar sesión:', err);
-            return res.redirect('/');
+            req.flash('error', 'Error al cerrar sesión...');
+            return res.redirect('/profile');
         }
 
         req.session.destroy((err) => {
             if (err) {
                 console.log('Error al destruir la sesión:', err);
-                return res.redirect('/');
+                req.flash('error', 'Error al destruir sesión...');
+                return res.redirect('/profile');
             }            
             res.clearCookie('connect.sid', { path: '/' });
             console.log(`Cierre de sesión exitoso para el usuario: ${userEmail}`);            

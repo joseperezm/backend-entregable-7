@@ -1,3 +1,8 @@
+{{#if messages.success}}
+<div class="alert alert-success mx-5 text-center" role="alert" id="success-message">
+{{messages.success}}
+</div>
+{{/if}}
 <h1 class="titulos mt-4">Mis productos</h1>
 <div class="centrar-botones">
 <div class="btn-group sorting-buttons" role="group" aria-label="Sorting Buttons">
@@ -54,3 +59,4 @@
   </ul>
 </nav>
 <script src="/js/addProduct.js"></script>
+<script src="/js/hideError.js"></script>
